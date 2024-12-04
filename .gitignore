@@ -13,6 +13,9 @@
 /prisma/db.sqlite-journal
 db.sqlite
 
+#docker-compose
+docker-compose.yml
+
 # next.js
 /.next/
 /out/
