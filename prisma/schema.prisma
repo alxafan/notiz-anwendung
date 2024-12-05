@@ -3,6 +3,7 @@
 
 generator client {
     provider = "prisma-client-js"
+    binaryTargets = ["native", "debian-openssl-3.0.x"]  // Needed for Prisma Client Query Engine
 }
 
 datasource db {
