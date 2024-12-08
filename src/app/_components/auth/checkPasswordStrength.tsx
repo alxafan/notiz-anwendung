@@ -1,10 +1,8 @@
  export default function checkPw(password: string): string | null{
     let score = 0;
 
-    //if (weakPasswords.includes(password)) {
-      //  return "Das Pw steht auf einer Liste mit schwachen Passwörtern";
-      //}
-
+    
+    //500 schwächste pws
       const weakPasswords = [
         "12345", "abc123", "password", "computer", "123456", "tigger", "1234", "a1b2c3", "qwerty", "123", 
         "scret", "money", "test", "carmen", "mickey", "secret", "summer", "internet", "service", "canada", 
@@ -88,6 +86,7 @@
         "1212", "1911", "1948", "1973", "1978", "1996", "1p2o3i", "2000", "2222", "3bears", "5252", "Andrew"
       ];
 
+      
     for(const weak of weakPasswords){
         if(password === weak){
             score -=1;
