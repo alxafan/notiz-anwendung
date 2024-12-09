@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import  checkPw  from './checkPasswordStrength';
+import Link from 'next/link';
 export default function SignUpForm() {
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
@@ -130,6 +131,16 @@ export default function SignUpForm() {
             )}
           </div>
 
+          <div className='w-full'>
+            <button
+                  
+                  className=' w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                ><Link href={"/api/auth/signin"}>
+                  {"Sign in with Discord"}
+                  </Link>
+          </button>
+        </div>
+
         <button
           type="submit"
           className=" w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
@@ -137,6 +148,8 @@ export default function SignUpForm() {
         >
           Sign Up
         </button>
+
+
       </form>
     </div>
   </div>
