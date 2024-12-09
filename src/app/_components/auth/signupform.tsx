@@ -1,15 +1,24 @@
 'use client'
 import { useEffect, useState } from 'react';
 import  checkPw  from './checkPasswordStrength';
+import { api } from "~/trpc/react";
 import Link from 'next/link';
+import { redirect } from 'next/dist/server/api-utils';
+import { useRouter } from 'next/navigation';
 export default function SignUpForm() {
+
+    const router = useRouter();
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ repeatPassword, setRepeatPassword ] = useState("");
     const [ username, setUsername ] = useState("");
     const [ message, setMessage ] = useState("");
+    const [ errorMessage, setErrorMessage ] = useState("");
     const [ isDropdownOpen, setIsDropdownOpen ] = useState(false);
     const [ passwordStrength, setPasswordStrength ] = useState(false);
+    const authentication = api.auth.signup.useMutation();
+
+
 
     //checkt ob Passwort und RepeatPasswort gleich sind
     const isFormValid =
@@ -57,6 +66,25 @@ export default function SignUpForm() {
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault(); // Prevent form default submission
       // Check if form is valid... trpc route später noch aufrufen
+      if (isFormValid && passwordStrength) {
+        authentication.mutate({
+          email,
+          password,
+          username,
+        }, {
+          onSuccess: () => {
+
+            setTimeout(() => {
+              router.push("/");
+            }, 2000);
+          },
+          onError: (error) => {
+            setErrorMessage(error.message);
+          }
+          
+        });
+      }
+
     };
 
     const toggleDropdown = () => {
@@ -148,7 +176,7 @@ export default function SignUpForm() {
         >
           Sign Up
         </button>
-
+        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
 
       </form>
     </div>

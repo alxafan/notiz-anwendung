@@ -1,4 +1,6 @@
+import { auth } from "~/auth";
 import { noteRouter } from "~/server/api/routers/note";
+import { authRouter } from "~/server/api/routers/auth";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -8,6 +10,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   note: noteRouter,
+  auth: authRouter,
 });
 
 // export type definition of API
