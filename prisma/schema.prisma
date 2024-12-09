@@ -3,7 +3,7 @@
 
 generator client {
     provider = "prisma-client-js"
-    binaryTargets = ["native", "debian-openssl-3.0.x"]  // Needed for Prisma Client Query Engine
+    binaryTargets = ["native", "debian-openssl-3.0.x"]  // Might need to change when example database is exchanged
 }
 
 datasource db {
@@ -15,16 +15,13 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Note {
+    id          String   @id @default(uuid())
+    content     String
+    isPrivate   Boolean @default(false) 
 
     createdBy   User   @relation(fields: [createdById], references: [id])
     createdById String
-
-    @@index([name])
 }
 
 // Necessary for Next auth
@@ -60,10 +57,11 @@ model User {
     name          String?
     email         String?   @unique
     emailVerified DateTime?
+    password      String?
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    notes         Note[]
 }
 
 model VerificationToken {
