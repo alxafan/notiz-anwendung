@@ -10,16 +10,23 @@ export  const authRouter = createTRPCRouter({
     signup: publicProcedure
         .input(
             z.object({
-                username: z.string(),
-                email: z.string().email(),
+                username: z.string().min(1, "Username is required"),
+                email: z.string().email().min(1, "Email is required"),
                 password: z.string().min(8),
             })
         )
         .mutation(async ({ input }) => {
             const passValidation = checkPw(input.password);
+
+            if (!input.username.trim() || !input.email.trim() || !input.password.trim()) {
+                throw new Error("All fields must be filled out.");
+            }
+
+            
             if(passValidation !== "Starkes Passwort!") {
                 throw new Error("Password is not strong enough");
             }
+            
 
             const hashedPassword = await bcrypt.hash(input.password, 10);
 
