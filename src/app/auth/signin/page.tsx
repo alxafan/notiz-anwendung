@@ -30,13 +30,7 @@ export default function SignIn() {
     }
   }
   async function handleDiscordSignIn() {
-    const result = await signIn("discord", { redirect: false });
-    if (result?.error) {
-      setErrorMessage("Failed to sign in with Discord:");
-    } else {
-      setErrorMessage(""); // Clear error message
-      router.push("/");
-    }
+    await signIn("discord", { redirectTo: "/" });
   }
 
   return (
@@ -86,6 +80,16 @@ export default function SignIn() {
           {errorMessage && (
             <p className="text-sm text-red-500">{errorMessage}</p>
           )}
+
+          <div className="w-full">
+            <button
+              type="button"
+              onClick={() => router.push("/auth/signup")}
+              className="text-sm text-blue-500 hover:underline"
+            >
+              Noch kein Account? Sign Up
+            </button>
+          </div>
         </form>
       </div>
     </div>
