@@ -106,8 +106,24 @@ export const authConfig = {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
       // Initial sign in
+      if (account?.provider === "discord") {
+        const existingUser = profile?.email
+          ? await db.user.findUnique({ where: { email: profile.email } })
+          : null;
+
+        if (!existingUser) {
+          user = await db.user.create({
+            data: {
+              name: profile?.username as string,
+              email: profile?.email,
+            },
+          });
+        } else {
+          user = existingUser;
+        }
+      }
       if (user) {
         token.id = user.id;
       }
