@@ -5,6 +5,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import sanitizeHtml from "sanitize-html";
 
 export const noteRouter = createTRPCRouter({
   hello: publicProcedure
@@ -37,4 +38,25 @@ export const noteRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
+
+  //own NoteCreation
+  createNote: protectedProcedure
+    .input(z.object({ content: z.string().min(1), isPrivate: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session.user) {
+        throw new Error("Unauthorized: User not logged in");
+      }
+
+      // Sanitize the content before saving
+
+      const note = await ctx.db.note.create({
+        data: {
+          content: input.content,
+          createdBy: { connect: { id: ctx.session.user.id } },
+          isPrivate: input.isPrivate,
+        },
+      });
+      console.log(note);
+      return note;
+    }),
 });
