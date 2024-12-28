@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { api } from "~/trpc/react";
 import DOMPurify from "dompurify";
-import { set } from "zod";
+import rehypeRaw from "rehype-raw";
 
 export default function CreateNotPage() {
   const [content, setContent] = useState("");
@@ -80,7 +80,7 @@ export default function CreateNotPage() {
 
       <h3>Preview:</h3>
       <div className="preview">
-        <ReactMarkdown>{preview}</ReactMarkdown>
+        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{preview}</ReactMarkdown>
       </div>
     </div>
   );
