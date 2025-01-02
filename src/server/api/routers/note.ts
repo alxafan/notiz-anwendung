@@ -5,7 +5,6 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import sanitizedContent from "~/utils/sanatize";
 
 export const noteRouter = createTRPCRouter({
   hello: publicProcedure
@@ -47,12 +46,9 @@ export const noteRouter = createTRPCRouter({
         throw new Error("Unauthorized: User not logged in");
       }
 
-      // Sanitize the content before saving
-      const sanatized = sanitizedContent(input.content);
-
       const note = await ctx.db.note.create({
         data: {
-          content: sanatized,
+          content: input.content,
           createdBy: { connect: { id: ctx.session.user.id } },
           isPrivate: input.isPrivate,
         },
