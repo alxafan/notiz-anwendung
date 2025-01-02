@@ -6,10 +6,9 @@ import { api } from "~/trpc/react";
 import DOMPurify from "dompurify";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import { waitForDebugger } from "inspector";
-import { set } from "zod";
 
 export default function CreateNotPage() {
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [preview, setPreview] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
@@ -17,6 +16,10 @@ export default function CreateNotPage() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const createNoteMutation = api.note.createNote.useMutation();
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  };
 
   const handleContentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -43,18 +46,20 @@ export default function CreateNotPage() {
     try {
       // Notiz erstellen
       await createNoteMutation.mutateAsync({
+        title: title,
         content: sanitizedContent,
         isPrivate,
       });
       setMessage("Notiz erfolgreich erstellt");
       setTimeout(() => {
+        setTitle("");
         setContent("");
         setPreview("");
         setMessage("");
         setErrorMessage("");
       }, 3000);
     } catch (error) {
-      setErrorMessage("Es gab einen Fehler beim erstellen der Notiz");
+      setErrorMessage("Es gab einen Fehler beim Erstellen der Notiz");
       console.error(error);
     }
   };
@@ -68,10 +73,17 @@ export default function CreateNotPage() {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          value={title}
+          onChange={handleTitleChange}
+          placeholder="Titel der Notiz"
+          className="w-full rounded-md border p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <textarea
           value={content}
           onChange={handleContentChange}
-          placeholder="Write your markdown here..."
+          placeholder="Schreibe hier deine Markdown/HTML-Tag Notiz..."
           rows={10}
           cols={50}
           className="w-full rounded-md border p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

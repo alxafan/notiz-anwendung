@@ -20,6 +20,7 @@ export const noteRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.note.create({
         data: {
+          title: "Untitled",
           content: input.content,
           createdBy: { connect: { id: ctx.session.user.id } },
         },
@@ -40,7 +41,13 @@ export const noteRouter = createTRPCRouter({
 
   //own NoteCreation
   createNote: protectedProcedure
-    .input(z.object({ content: z.string().min(1), isPrivate: z.boolean() }))
+    .input(
+      z.object({
+        title: z.string().min(1),
+        content: z.string().min(1),
+        isPrivate: z.boolean(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user) {
         throw new Error("Unauthorized: User not logged in");
@@ -48,6 +55,7 @@ export const noteRouter = createTRPCRouter({
 
       const note = await ctx.db.note.create({
         data: {
+          title: input.title,
           content: input.content,
           createdBy: { connect: { id: ctx.session.user.id } },
           isPrivate: input.isPrivate,
