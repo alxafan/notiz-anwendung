@@ -5,12 +5,14 @@ import ReactMarkdown from "react-markdown";
 import { api } from "~/trpc/react";
 import DOMPurify from "dompurify";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 export default function CreateNotPage() {
   const [content, setContent] = useState("");
   const [preview, setPreview] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [message, setMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const createNoteMutation = api.note.createNote.useMutation();
 
@@ -38,49 +40,60 @@ export default function CreateNotPage() {
 
     try {
       // Notiz erstellen
-      createNoteMutation.mutate({
+      await createNoteMutation.mutateAsync({
         content: sanitizedContent,
         isPrivate,
       });
-      setMessage("Note created successfully");
+      setMessage("Notiz erfolgreich erstellt");
     } catch (error) {
-      setMessage("An error occurred while creating the note");
+      setErrorMessage("Es gab einen Fehler beim erstellen der Notiz");
       console.error(error);
     }
   };
 
   return (
-    <div>
-      <h1>Create a New Note</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="mb-4 text-2xl font-bold">Erstelle eine Notiz</h1>
+      <p className="mb-2 text-sm text-gray-500">
+        nach einem html tag muss eine Zeile frei sein, um mit markdown
+        fortzufahren
+      </p>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <textarea
           value={content}
           onChange={handleContentChange}
           placeholder="Write your markdown here..."
           rows={10}
           cols={50}
-          className="textarea"
+          className="w-full rounded-md border p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              checked={isPrivate}
-              onChange={handlePrivacyToggle}
-            />
-            Make this note private
-          </label>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            checked={isPrivate}
+            onChange={handlePrivacyToggle}
+            className="mr-2"
+          />
+          <label className="text-sm">Mache diese Notiz privat</label>
         </div>
 
-        <button type="submit">Save Note</button>
-        <p>{message}</p>
+        <button
+          type="submit"
+          className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Speichern
+        </button>
+        <p className="text-green-500">{message}</p>
+        <p className="text-red-500">{errorMessage}</p>
       </form>
 
-      <h3>Preview:</h3>
-      <div className="preview">
-        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{preview}</ReactMarkdown>
+      <h3 className="mt-6 text-xl font-semibold">Vorschau:</h3>
+      <div className="preview min-h-40 rounded-md border p-4 shadow-sm">
+        <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+          {preview}
+        </ReactMarkdown>
       </div>
     </div>
   );
