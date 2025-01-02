@@ -6,6 +6,8 @@ import { api } from "~/trpc/react";
 import DOMPurify from "dompurify";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import { waitForDebugger } from "inspector";
+import { set } from "zod";
 
 export default function CreateNotPage() {
   const [content, setContent] = useState("");
@@ -45,6 +47,12 @@ export default function CreateNotPage() {
         isPrivate,
       });
       setMessage("Notiz erfolgreich erstellt");
+      setTimeout(() => {
+        setContent("");
+        setPreview("");
+        setMessage("");
+        setErrorMessage("");
+      }, 3000);
     } catch (error) {
       setErrorMessage("Es gab einen Fehler beim erstellen der Notiz");
       console.error(error);
