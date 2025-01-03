@@ -35,9 +35,6 @@ async function DocumentPage({
         case "NOT_FOUND":
           errorMessage = "The requested note was not found.";
           break;
-        case "FORBIDDEN":
-          errorMessage = "You do not have access to this note.";
-          break;
         default:
           errorMessage = "Something went wrong. Please try again later.";
           break;

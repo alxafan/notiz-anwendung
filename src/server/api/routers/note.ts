@@ -90,11 +90,6 @@ export const noteRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      // Überprüfung: Zugriff verweigern, wenn die Notiz privat ist und der User nicht der Ersteller ist
-      if (note.isPrivate && note.createdById !== ctx.session.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN" });
-      }
-
       // Rückgabe der Notiz, wenn die Überprüfung bestanden ist
       return note;
     }),
