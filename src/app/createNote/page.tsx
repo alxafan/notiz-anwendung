@@ -6,6 +6,7 @@ import { api } from "~/trpc/react";
 import DOMPurify from "dompurify";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import { useRouter } from "next/navigation";
 
 export default function CreateNotPage() {
   const [title, setTitle] = useState("");
@@ -14,6 +15,7 @@ export default function CreateNotPage() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
   const createNoteMutation = api.note.createNote.useMutation();
 
@@ -45,7 +47,7 @@ export default function CreateNotPage() {
 
     try {
       // Notiz erstellen
-      await createNoteMutation.mutateAsync({
+      const note = await createNoteMutation.mutateAsync({
         title: title,
         content: sanitizedContent,
         isPrivate,
@@ -57,6 +59,7 @@ export default function CreateNotPage() {
         setPreview("");
         setMessage("");
         setErrorMessage("");
+        router.push(`documents/${note.id}`);
       }, 3000);
     } catch (error) {
       setErrorMessage("Es gab einen Fehler beim Erstellen der Notiz");

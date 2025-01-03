@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
@@ -62,6 +63,39 @@ export const noteRouter = createTRPCRouter({
         },
       });
       console.log(note);
+      return note;
+    }),
+
+  getNoteById: protectedProcedure
+    .input(z.string().uuid())
+    .query(async ({ ctx, input }) => {
+      const note = await ctx.db.note.findFirst({
+        where: {
+          id: input,
+        },
+        select: {
+          title: true,
+          content: true,
+          isPrivate: true,
+          createdById: true,
+          createdBy: {
+            select: {
+              name: true, // Name des Erstellers selektieren
+            },
+          },
+        },
+      });
+
+      if (!note) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      // Überprüfung: Zugriff verweigern, wenn die Notiz privat ist und der User nicht der Ersteller ist
+      if (note.isPrivate && note.createdById !== ctx.session.user.id) {
+        throw new TRPCError({ code: "FORBIDDEN" });
+      }
+
+      // Rückgabe der Notiz, wenn die Überprüfung bestanden ist
       return note;
     }),
 });
