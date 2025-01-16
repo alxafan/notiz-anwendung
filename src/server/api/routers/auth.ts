@@ -61,8 +61,9 @@ export const authRouter = createTRPCRouter({
       });
     }),
 
+  //query um die Email zu schicken und den Token zu erstellen, um sein PW zurückzusetzen
   forgotPassword: publicProcedure
-    .input(z.object({ email: z.string().email() })) // Validierung der E-Mail
+    .input(z.object({ email: z.string().email() }))
     .mutation(async ({ input }) => {
       // Überprüfe, ob die E-Mail-Adresse in der Datenbank existiert
       const user = await db.user.findUnique({
@@ -77,7 +78,7 @@ export const authRouter = createTRPCRouter({
       const resetToken: string = crypto.randomBytes(32).toString("hex");
       const expiresAt = new Date(Date.now() + 3600000); // Das Token ist 1 Stunde lang gültig
 
-      // Speichere das Token in der Datenbank
+      // Speichere das Token in der Datenbank und verknüpfe ihn mit dem user
       await db.passwordReset.create({
         data: {
           userId: user.id,
@@ -92,6 +93,7 @@ export const authRouter = createTRPCRouter({
       return { message: "Password reset email sent!" };
     }),
 
+  //Mutation um das PW zurückzusetzen
   resetPassword: publicProcedure
     .input(z.object({ token: z.string(), newPassword: z.string().min(8) }))
     .mutation(async ({ input }) => {
@@ -131,7 +133,7 @@ export const authRouter = createTRPCRouter({
 
       return { message: "Password reset successful" };
     }),
-
+  //query um den Token zu bekommen, um zu gucken ob er noch gültig ist
   getToken: publicProcedure
     .input(z.object({ token: z.string() }))
     .query(async ({ input }) => {

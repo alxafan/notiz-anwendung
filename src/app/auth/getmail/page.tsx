@@ -16,7 +16,7 @@ const GetMailPage: React.FC = () => {
       setError("Emails do not match");
     } else {
       setError("");
-      // Handle successful email submission
+      // email schicken wenn emails übereinstimmen, im backend wird geprüft, ob die mails existieren, bei error kommt auch die bestätigung, damit der user nicht weiß, ob die mail existiert
       forgotPassword.mutate(
         {
           email,
@@ -24,6 +24,9 @@ const GetMailPage: React.FC = () => {
         {
           onSuccess: () => {
             setMessage("Email sent successfully. Check your inbox.");
+          },
+          onError: () => {
+            setError("Email sent successfully. Check your inbox.");
           },
         },
       );

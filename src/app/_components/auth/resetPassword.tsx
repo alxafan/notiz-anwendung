@@ -56,6 +56,7 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
       }
     }
   }, [password]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid && passwordStrength && token) {
@@ -82,7 +83,7 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
+  //wenn token ungültig oder abgelaufen ist
   if (!userToken) {
     return <div>Invalid or expired token</div>;
   }
