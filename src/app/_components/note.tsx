@@ -9,7 +9,7 @@ export default function Note({ content }: { content: string }) {
   return (
     <div className="preview w-auto rounded-md border p-4 shadow-sm">
       <ReactMarkdown
-        className="items-center justify-center"
+        className="prose items-center justify-center"
         rehypePlugins={[rehypeRaw]}
         remarkPlugins={[remarkGfm]}
       >
