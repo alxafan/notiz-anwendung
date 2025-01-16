@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import checkPw from "~/app/_components/auth/checkPasswordStrength";
-import { set } from "zod";
 
 const ResetPasswordPage = ({ token }: { token: string }) => {
   const [password, setPassword] = useState("");

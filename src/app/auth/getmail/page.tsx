@@ -1,14 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
-import { useRouter } from "next/navigation";
 
 const GetMailPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [confirmEmail, setConfirmEmail] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const router = useRouter();
+
   const forgotPassword = api.auth.forgotPassword.useMutation();
 
   const handleSubmit = (event: React.FormEvent) => {
