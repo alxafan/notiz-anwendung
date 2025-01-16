@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import checkPw from "~/app/_components/auth/checkPasswordStrength";
 import { api } from "~/trpc/react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 export default function SignUpForm() {
   const router = useRouter();

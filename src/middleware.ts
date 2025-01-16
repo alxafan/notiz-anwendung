@@ -5,7 +5,11 @@ import { auth } from "~/auth";
 export const { auth: middleware } = NextAuth(authConfig);
 
 export default auth((req) => {
-  const excludedPaths = ["/auth/signin", "/auth/signup"];
+  const excludedPaths = [
+    "/auth/signin",
+    "/auth/signup",
+    "/auth/reset-password",
+  ];
   if (!req.auth && !excludedPaths.includes(req.nextUrl.pathname)) {
     const newUrl = new URL("/auth/signin", req.nextUrl.origin);
     return Response.redirect(newUrl);
