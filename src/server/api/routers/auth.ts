@@ -4,7 +4,6 @@ import checkPw from "~/app/_components/auth/checkPasswordStrength";
 import bcrypt from "bcryptjs";
 import { sendPasswordResetEmail } from "~/utils/mail";
 import crypto from "crypto";
-
 import { db } from "~/server/db";
 
 export const authRouter = createTRPCRouter({
@@ -131,5 +130,20 @@ export const authRouter = createTRPCRouter({
       });
 
       return { message: "Password reset successful" };
+    }),
+
+  getToken: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .query(async ({ input }) => {
+      const token = await db.passwordReset.findFirst({
+        where: {
+          token: input.token,
+          expiresAt: {
+            gte: new Date(),
+          },
+        },
+      });
+
+      return token;
     }),
 });

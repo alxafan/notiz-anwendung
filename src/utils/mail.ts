@@ -2,7 +2,7 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: "localhost",
+  host: "mailhog",
   port: 1025,
   secure: false,
 });
@@ -11,7 +11,7 @@ export const sendPasswordResetEmail = async (
   email: string,
   resetToken: string,
 ) => {
-  const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+  const resetUrl = `http://localhost:3000/auth/reset-password/${resetToken}`;
   const mailOptions = {
     from: "your-email@example.com",
     to: email,

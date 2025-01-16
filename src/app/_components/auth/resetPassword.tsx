@@ -1,20 +1,22 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import checkPw from "~/app/_components/auth/checkPasswordStrength";
+import { set } from "zod";
 
-const ResetPasswordPage = () => {
+const ResetPasswordPage = ({ token }: { token: string }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [passwordStrength, setPasswordStrength] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const token = searchParams.get("token"); // Der Token wird aus der URL abgerufen
   const resetPasswordMutation = api.auth.resetPassword.useMutation();
+  const { data: userToken, isLoading } = api.auth.getToken.useQuery({
+    token: token,
+  });
 
   //checkt ob Passwort und RepeatPasswort gleich sind
   const isFormValid =
@@ -65,6 +67,7 @@ const ResetPasswordPage = () => {
         },
         {
           onSuccess: () => {
+            setMessage("Password reset successful");
             setTimeout(() => {
               router.push("/auth/signin");
             }, 2000);
@@ -76,6 +79,14 @@ const ResetPasswordPage = () => {
       );
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userToken) {
+    return <div>Invalid or expired token</div>;
+  }
 
   return (
     <div className="mx-auto max-w-md rounded-lg border bg-white p-6 shadow-md">
@@ -114,7 +125,7 @@ const ResetPasswordPage = () => {
           />
         </div>
 
-        {message && <p className="text-sm text-red-500">{message} </p>}
+        {message && <p className="text-sm text-green-500">{message} </p>}
         {errorMessage && (
           <p className="text-sm text-red-500">{errorMessage} </p>
         )}
@@ -130,10 +141,4 @@ const ResetPasswordPage = () => {
   );
 };
 
-export default function PageWrapper() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ResetPasswordPage />
-    </Suspense>
-  );
-}
+export default ResetPasswordPage;

@@ -8,7 +8,8 @@ export default auth((req) => {
   const excludedPaths = [
     "/auth/signin",
     "/auth/signup",
-    "/auth/reset-password",
+    "/auth/getmail",
+    "/auth/reset-password/[token]",
   ];
   if (!req.auth && !excludedPaths.includes(req.nextUrl.pathname)) {
     const newUrl = new URL("/auth/signin", req.nextUrl.origin);
@@ -17,5 +18,7 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|auth/signup).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|auth/signup|auth/getmail|auth/reset-password/*).*)",
+  ],
 };
