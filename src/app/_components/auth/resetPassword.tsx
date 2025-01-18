@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
-import { zxcvbn } from "@zxcvbn-ts/core";
+import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
+import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
+import * as zxcvbnDePackage from "@zxcvbn-ts/language-de";
 
 const ResetPasswordPage = ({ token }: { token: string }) => {
   const [password, setPassword] = useState("");
@@ -16,6 +18,17 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
     token: token,
   });
   const [passwordScore, setPasswordScore] = useState(0);
+
+  const options = {
+    translations: zxcvbnDePackage.translations,
+    graphs: zxcvbnCommonPackage.adjacencyGraphs,
+    dictionary: {
+      ...zxcvbnCommonPackage.dictionary,
+      ...zxcvbnDePackage.dictionary,
+    },
+  };
+
+  zxcvbnOptions.setOptions(options);
 
   //checkt ob Passwort und RepeatPasswort gleich sind
   const isFormValid =

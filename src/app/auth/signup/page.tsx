@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
-import { zxcvbn } from "@zxcvbn-ts/core";
+import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
+import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
+import * as zxcvbnDePackage from "@zxcvbn-ts/language-de";
 export default function SignUpForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -16,6 +18,16 @@ export default function SignUpForm() {
 
   const authentication = api.auth.signup.useMutation();
 
+  const options = {
+    translations: zxcvbnDePackage.translations,
+    graphs: zxcvbnCommonPackage.adjacencyGraphs,
+    dictionary: {
+      ...zxcvbnCommonPackage.dictionary,
+      ...zxcvbnDePackage.dictionary,
+    },
+  };
+
+  zxcvbnOptions.setOptions(options);
   //checkt ob Passwort und RepeatPasswort gleich sind
   const isFormValid =
     username.trim() !== "" &&

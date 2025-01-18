@@ -45,6 +45,7 @@ export const authRouter = createTRPCRouter({
       }
 
       if (pwstrength < 4) {
+        console.log(passValidation.score);
         throw new Error(
           passValidation.feedback.warning ?? "Passwort ist zu schwach",
         );
