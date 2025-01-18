@@ -71,7 +71,7 @@ export const authRouter = createTRPCRouter({
       });
 
       if (!user) {
-        throw new Error("omething went wrong");
+        throw new Error("something went wrong");
       }
 
       // Generiere ein Reset-Token
