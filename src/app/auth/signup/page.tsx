@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import checkPw from "~/app/_components/auth/checkPasswordStrength";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import { zxcvbn } from "@zxcvbn-ts/core";
 export default function SignUpForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -12,7 +12,8 @@ export default function SignUpForm() {
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState(false);
+  const [passwordScore, setPasswordScore] = useState(0);
+
   const authentication = api.auth.signup.useMutation();
 
   //checkt ob Passwort und RepeatPasswort gleich sind
@@ -37,31 +38,35 @@ export default function SignUpForm() {
     checkIfFormValid();
   }, [password, repeatPassword]);
 
-  //Beim eingeben Passwortstärke checken
+  //passwortstärke setzen
   useEffect(() => {
-    if (password.trim() === "") {
-      setMessage(""); // Keine Nachricht, wenn das Passwortfeld leer ist
-      setPasswordStrength(false); // Setzt Passwortstärke zurück, wenn leer
-    } else {
-      const strengthMessage = checkPw(password);
-      if (typeof strengthMessage === "string") {
-        setMessage(strengthMessage);
-      } else {
-        setMessage("Password strength check failed");
-      }
-      if (strengthMessage === "Starkes Passwort!") {
-        setPasswordStrength(true);
-      } else {
-        setPasswordStrength(false);
-      }
-    }
+    const pwStrength = zxcvbn(password);
+    setPasswordScore(pwStrength.score);
   }, [password]);
+
+  //Farbe für Passwortstärke setzen
+  const strengthColor = (score: number) => {
+    switch (score) {
+      case 0:
+        return "bg-red-500";
+      case 1:
+        return "bg-red-300";
+      case 2:
+        return "bg-yellow-500";
+      case 3:
+        return "bg-yellow-300";
+      case 4:
+        return "bg-green-500";
+      default:
+        return;
+    }
+  };
 
   // Handle form submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Prevent form default submission
     // Check if form is valid... trpc route später noch aufrufen
-    if (isFormValid && passwordStrength) {
+    if (isFormValid) {
       authentication.mutate(
         {
           email,
@@ -145,27 +150,26 @@ export default function SignUpForm() {
             {isDropdownOpen && (
               <div className="absolute left-0 mt-2 w-72 rounded-lg border bg-white p-4 shadow-lg">
                 <ul className="space-y-2 text-sm text-gray-700">
-                  <li>- Mindestens 8 Zeichen</li>
-                  <li>- Ein Großbuchstabe (A-Z)</li>
-                  <li>- Ein Kleinbuchstabe (a-z)</li>
-                  <li>- Eine Zahl (0-9)</li>
-                  <li>- Ein Sonderzeichen (!@#$%^&*...)</li>
-                  <li>
-                    - Keine mehr als 2 gleiche hintereinander stehenden Zeichen
-                  </li>
-                  <li>
-                    - Keine aufeinanderfolgende Zeichenfolge wie &quot;123&quot;
-                    oder &quot;abc&quot;
-                  </li>
+                  <li>- Der Balken muss grün sein!</li>
                 </ul>
               </div>
             )}
           </div>
 
+          <div className="mt-2 flex items-center">
+            <div
+              className={`h-2 w-1/2 rounded-full ${strengthColor(passwordScore)}`}
+            />
+          </div>
+
           <button
             type="submit"
-            className="w-full rounded-lg bg-indigo-600 py-2 font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            disabled={!isFormValid || !passwordStrength}
+            className={`w-full rounded-lg py-2 font-semibold focus:outline-none focus:ring-2 ${
+              isFormValid
+                ? "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
+                : "cursor-not-allowed bg-gray-400 text-gray-200"
+            }`}
+            disabled={!isFormValid}
           >
             Sign Up
           </button>

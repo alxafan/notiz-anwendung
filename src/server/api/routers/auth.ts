@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import checkPw from "~/app/_components/auth/checkPasswordStrength";
 import bcrypt from "bcryptjs";
+import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
+import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
+import * as zxcvbnDePackage from "@zxcvbn-ts/language-de";
 import { sendPasswordResetEmail } from "~/utils/mail";
 import crypto from "crypto";
 import { db } from "~/server/db";
@@ -10,13 +15,26 @@ export const authRouter = createTRPCRouter({
   signup: publicProcedure
     .input(
       z.object({
-        username: z.string().min(1, "Username is required"),
+        username: z.string().min(3, "Username is required"),
         email: z.string().email().min(1, "Email is required"),
-        password: z.string().min(8),
+        password: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
-      const passValidation = checkPw(input.password);
+      //Zxcvbn Optionen setzen
+      const options = {
+        translations: zxcvbnDePackage.translations,
+        graphs: zxcvbnCommonPackage.adjacencyGraphs,
+        dictionary: {
+          ...zxcvbnCommonPackage.dictionary,
+          ...zxcvbnDePackage.dictionary,
+        },
+      };
+
+      zxcvbnOptions.setOptions(options);
+
+      const passValidation = zxcvbn(input.password);
+      const pwstrength = passValidation.score;
 
       if (
         !input.username.trim() ||
@@ -26,8 +44,10 @@ export const authRouter = createTRPCRouter({
         throw new Error("All fields must be filled out.");
       }
 
-      if (passValidation !== "Starkes Passwort!") {
-        throw new Error("Password is not strong enough");
+      if (pwstrength < 4) {
+        throw new Error(
+          passValidation.feedback.warning ?? "Passwort ist zu schwach",
+        );
       }
 
       const hashedPassword = await bcrypt.hash(input.password, 10);
@@ -97,7 +117,7 @@ export const authRouter = createTRPCRouter({
   resetPassword: publicProcedure
     .input(z.object({ token: z.string(), newPassword: z.string().min(8) }))
     .mutation(async ({ input }) => {
-      // Überprüfe, ob das Token in der Datenbank existiert
+      // Überprüfe ob das Token in der Datenbank existiert
       const reset = await db.passwordReset.findFirst({
         where: {
           token: input.token,
@@ -109,6 +129,26 @@ export const authRouter = createTRPCRouter({
 
       if (!reset) {
         throw new Error("Invalid or expired token");
+      }
+
+      const options = {
+        translations: zxcvbnDePackage.translations,
+        graphs: zxcvbnCommonPackage.adjacencyGraphs,
+        dictionary: {
+          ...zxcvbnCommonPackage.dictionary,
+          ...zxcvbnDePackage.dictionary,
+        },
+      };
+
+      zxcvbnOptions.setOptions(options);
+
+      const passValidation = zxcvbn(input.newPassword);
+      const pwstrength = passValidation.score;
+
+      if (pwstrength < 4) {
+        throw new Error(
+          passValidation.feedback.warning ?? "Password ist zu schwach",
+        );
       }
 
       // Hash des neuen Passworts

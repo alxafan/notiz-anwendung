@@ -3,25 +3,49 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
-import checkPw from "~/app/_components/auth/checkPasswordStrength";
+import { zxcvbn } from "@zxcvbn-ts/core";
 
 const ResetPasswordPage = ({ token }: { token: string }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [passwordStrength, setPasswordStrength] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
   const resetPasswordMutation = api.auth.resetPassword.useMutation();
   const { data: userToken, isLoading } = api.auth.getToken.useQuery({
     token: token,
   });
+  const [passwordScore, setPasswordScore] = useState(0);
 
   //checkt ob Passwort und RepeatPasswort gleich sind
   const isFormValid =
     password === confirmPassword &&
     password.trim() !== "" &&
     confirmPassword.trim() !== "";
+
+  //passwortstärke setzen
+  useEffect(() => {
+    const pwStrength = zxcvbn(password);
+    setPasswordScore(pwStrength.score);
+  }, [password]);
+
+  //Farbe für Passwortstärke setzen
+  const strengthColor = (score: number) => {
+    switch (score) {
+      case 0:
+        return "bg-red-500";
+      case 1:
+        return "bg-red-300";
+      case 2:
+        return "bg-yellow-500";
+      case 3:
+        return "bg-yellow-300";
+      case 4:
+        return "bg-green-500";
+      default:
+        return;
+    }
+  };
 
   //Setzt die Message, ob pw's gleich sind
   useEffect(() => {
@@ -37,29 +61,9 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
     checkIfFormValid();
   }, [password, confirmPassword]);
 
-  //Beim eingeben Passwortstärke checken
-  useEffect(() => {
-    if (password.trim() === "") {
-      setMessage(""); // Keine Nachricht, wenn das Passwortfeld leer ist
-      setPasswordStrength(false); // Setzt Passwortstärke zurück, wenn leer
-    } else {
-      const strengthMessage = checkPw(password);
-      if (typeof strengthMessage === "string") {
-        setMessage(strengthMessage);
-      } else {
-        setMessage("Password strength check failed");
-      }
-      if (strengthMessage === "Starkes Passwort!") {
-        setPasswordStrength(true);
-      } else {
-        setPasswordStrength(false);
-      }
-    }
-  }, [password]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid && passwordStrength && token) {
+    if (isFormValid && token) {
       resetPasswordMutation.mutate(
         {
           token: token,
@@ -125,6 +129,12 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
           />
         </div>
 
+        <div className="mt-2 flex items-center">
+          <div
+            className={`h-2 w-1/2 rounded-full ${strengthColor(passwordScore)}`}
+          />
+        </div>
+
         {message && <p className="text-sm text-green-500">{message} </p>}
         {errorMessage && (
           <p className="text-sm text-red-500">{errorMessage} </p>
@@ -132,7 +142,12 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
 
         <button
           type="submit"
-          className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          className={`w-full rounded-lg py-2 font-semibold focus:outline-none focus:ring-2 ${
+            isFormValid
+              ? "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
+              : "cursor-not-allowed bg-gray-400 text-gray-200"
+          }`}
+          disabled={!isFormValid}
         >
           Reset Password
         </button>
