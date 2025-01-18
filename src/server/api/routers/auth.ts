@@ -15,7 +15,7 @@ export const authRouter = createTRPCRouter({
   signup: publicProcedure
     .input(
       z.object({
-        username: z.string().min(3, "Username is required"),
+        username: z.string().min(2, "Username is required"),
         email: z.string().email().min(1, "Email is required"),
         password: z.string(),
       }),

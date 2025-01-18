@@ -31,6 +31,7 @@ export default function SignUpForm() {
   //checkt ob Passwort und RepeatPasswort gleich sind
   const isFormValid =
     username.trim() !== "" &&
+    username.length >= 2 &&
     email.trim() !== "" &&
     password === repeatPassword &&
     password.trim() !== "" &&
