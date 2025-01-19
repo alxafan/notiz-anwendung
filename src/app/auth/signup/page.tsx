@@ -18,6 +18,7 @@ export default function SignUpForm() {
 
   const authentication = api.auth.signup.useMutation();
 
+  //zxcvbn optionen setzen
   const options = {
     translations: zxcvbnDePackage.translations,
     graphs: zxcvbnCommonPackage.adjacencyGraphs,
