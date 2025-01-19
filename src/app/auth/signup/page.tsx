@@ -65,9 +65,9 @@ export default function SignUpForm() {
       case 1:
         return "bg-red-300";
       case 2:
-        return "bg-yellow-500";
+        return "bg-orange-500";
       case 3:
-        return "bg-yellow-300";
+        return "bg-yellow-500";
       case 4:
         return "bg-green-500";
       default:
@@ -79,6 +79,7 @@ export default function SignUpForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Prevent form default submission
     // Check if form is valid... trpc route später noch aufrufen
+    setErrorMessage("");
     if (isFormValid) {
       authentication.mutate(
         {
