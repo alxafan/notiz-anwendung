@@ -114,7 +114,11 @@ export default function CreateNotPage() {
 
       <h3 className="mt-6 text-xl font-semibold">Vorschau:</h3>
       <div className="preview min-h-40 rounded-md border p-4 shadow-sm">
-        <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+        <ReactMarkdown
+          className="prose"
+          rehypePlugins={[rehypeRaw]}
+          remarkPlugins={[remarkGfm]}
+        >
           {preview}
         </ReactMarkdown>
       </div>

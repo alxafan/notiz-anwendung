@@ -90,6 +90,15 @@ export default function SignIn() {
               Noch kein Account? Sign Up
             </button>
           </div>
+          <div className="w-full">
+            <button
+              type="button"
+              onClick={() => router.push("/auth/getmail")}
+              className="text-sm text-blue-500 hover:underline"
+            >
+              Passwort vergessen?
+            </button>
+          </div>
         </form>
       </div>
     </div>
