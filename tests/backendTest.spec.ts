@@ -17,18 +17,13 @@ test.describe("backend test", () => {
       ],
     });
     // erwarten, dass die Anmeldung fehlschlägt, da das Passwort zu schwach ist
-    try {
-      await expect(
-        client.auth.signup.mutate({
-          username: "test",
-          email: "testusermail@mail.com",
-          password: "123",
-        }),
-      ).rejects.toThrowError(
-        'Häufige Zeichenfolgen wie "abc" sind leicht zu erraten.',
-      );
-    } catch (error) {
-      console.log(error);
-    }
+
+    await expect(
+      client.auth.signup.mutate({
+        username: "test",
+        email: "testusermail@mail.com",
+        password: "123",
+      }),
+    ).rejects.toThrowError();
   });
 });
