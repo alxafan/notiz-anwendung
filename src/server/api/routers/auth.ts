@@ -45,9 +45,7 @@ export const authRouter = createTRPCRouter({
       }
 
       if (pwstrength < 4) {
-        throw new Error(
-          passValidation.feedback.warning ?? "Passwort ist zu schwach",
-        );
+        throw new Error("oops"); // Absichtlich falsche Error Rückgabe
       }
 
       const hashedPassword = await bcrypt.hash(input.password, 10);
