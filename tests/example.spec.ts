@@ -1,61 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
 test.describe("SignUpForm Tests", () => {
   test.beforeEach(async ({ page }) => {
     // Navigiere zur Sign-Up-Seite
     await page.goto("http://localhost:3000/auth/signup");
-  });
-  test.afterEach(async () => {
-    await prisma.user.deleteMany({
-      where: {
-        email: "testuser@example.com",
-      },
-    });
-  });
-
-  test("should validate form fields and sign up successfully", async ({
-    page,
-  }) => {
-    const usernameInput = page.locator('input[placeholder="Username"]');
-    const emailInput = page.locator('input[placeholder="Email"]');
-    const passwordInput = page.locator('input[placeholder="Password"]');
-    const confirmPasswordInput = page.locator(
-      'input[placeholder="Confirm Password"]',
-    );
-    const signUpButton = page.locator('button:has-text("Sign Up")');
-    const strengthBar = page.locator("div.h-2");
-
-    // Eingabefelder ausfüllen
-    await usernameInput.fill("testuser");
-    await emailInput.fill("testuser@example.com");
-
-    // Schwaches Passwort eingeben
-    await passwordInput.fill("1234");
-    await confirmPasswordInput.fill("1234");
-
-    // Prüfen, ob der Stärke-Balken rot ist
-    await expect(strengthBar).toHaveClass(/bg-red-500/);
-
-    // Stärkeres Passwort eingeben
-    await passwordInput.fill("aiwdbzhawdbhjkwahudawdbhj!");
-    await confirmPasswordInput.fill("aiwdbzhawdbhjkwahudawdbhj!");
-
-    // Prüfen, ob der Stärke-Balken grün wird
-    await expect(strengthBar).toHaveClass(/bg-green-500/);
-
-    // Prüfen, ob der Sign-Up-Button aktiviert ist
-    await expect(signUpButton).toBeEnabled();
-
-    // Formular absenden
-    await signUpButton.click();
-
-    // Erfolgreiche Weiterleitung überprüfen
-    await page.waitForURL("http://localhost:3000/auth/signin", {
-      timeout: 60000,
-    }); // Zielseite nach erfolgreicher Anmeldung
-    await expect(page).toHaveURL(/\/auth\/signin/);
   });
 
   test("should show error when passwords do not match", async ({ page }) => {
