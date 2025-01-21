@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "~/server/api/root";
 import superjson from "superjson";
-import { error } from "console";
+
 //backend test
 test.describe("backend test", () => {
   test("create user", async ({}) => {
