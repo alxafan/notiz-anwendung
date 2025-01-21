@@ -93,4 +93,26 @@ export const noteRouter = createTRPCRouter({
       // Rückgabe der Notiz, wenn die Überprüfung bestanden ist
       return note;
     }),
+  getNoteIdByTitle: protectedProcedure
+    .input(z.string().nullable())
+    .query(async ({ ctx, input }) => {
+      if (!input) return [];
+      const ids = await ctx.db.note.findMany({
+        where: {
+          title: {
+            search: input,
+          },
+          createdById: ctx.session.user.id,
+        },
+        select: {
+          title: true,
+          id: true,
+        },
+      });
+
+      if (!ids) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+      return ids;
+    }),
 });

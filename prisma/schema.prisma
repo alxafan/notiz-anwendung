@@ -3,7 +3,10 @@
 
 generator client {
     provider = "prisma-client-js"
-    binaryTargets = ["native", "debian-openssl-3.0.x"]  // Might need to change when example database is exchanged
+    binaryTargets = ["native", "debian-openssl-3.0.x"]
+    // Using a preview feature, because we need to use rawQueries (Prisma docs recommend TypedSQL) to accomplish searching for Notes
+    // Prisma recommends not using preview features in production, but we have to use the above or full text search, which are both preview ¯\_(ツ)_/¯
+    previewFeatures = ["fullTextSearchPostgres"]
 }
 
 datasource db {
