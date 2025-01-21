@@ -18,7 +18,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Npde.js
+    - name: Set up Node.js
       uses: actions/setup-node@v4
       with: 
             node-version: lts/*
@@ -38,7 +38,7 @@ jobs:
       run: npm ci
 
     - name: Start application-specific services using Docker Compose
-      run: docker-compose up --build
+      run: docker compose up --build
 
     - name: Install Playwright Browser
       run: npx playwright install --with-deps
