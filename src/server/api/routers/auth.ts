@@ -20,7 +20,12 @@ export const authRouter = createTRPCRouter({
         password: z.string(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      // Check if the user already has a session
+      if (ctx.session?.user) {
+        throw new Error("You are already logged in.");
+      }
+
       //Zxcvbn Optionen setzen
       const options = {
         translations: zxcvbnDePackage.translations,
