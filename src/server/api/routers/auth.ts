@@ -15,8 +15,8 @@ export const authRouter = createTRPCRouter({
   signup: publicProcedure
     .input(
       z.object({
-        username: z.string().min(2, "Username is required"),
-        email: z.string().email().min(1, "Email is required"),
+        username: z.string().min(2),
+        email: z.string().email(),
         password: z.string(),
       }),
     )
@@ -35,7 +35,7 @@ export const authRouter = createTRPCRouter({
 
       const passValidation = zxcvbn(input.password);
       const pwstrength = passValidation.score;
-
+      //Überprüfen ob alle Felder ausgefüllt sind
       if (
         !input.username.trim() ||
         !input.email.trim() ||
@@ -43,15 +43,15 @@ export const authRouter = createTRPCRouter({
       ) {
         throw new Error("All fields must be filled out.");
       }
-
+      //Überprüfen ob die Passwörter übereinstimmen
       if (pwstrength < 4) {
         throw new Error(
           passValidation.feedback.warning ?? "Passwort ist zu schwach",
         );
       }
-
+      //Hashen des Passworts
       const hashedPassword = await bcrypt.hash(input.password, 10);
-
+      //Überprüfen ob der Benutzer schon existiert
       const existingUser = await db.user.findFirst({
         where: {
           name: input.username,
@@ -59,9 +59,9 @@ export const authRouter = createTRPCRouter({
       });
 
       if (existingUser) {
-        throw new Error("Username already exists");
+        throw new Error("Username or Email already exists");
       }
-
+      //Überprüfen ob die Email schon existiert
       const existingEmail = await db.user.findFirst({
         where: {
           email: input.email,
@@ -69,9 +69,9 @@ export const authRouter = createTRPCRouter({
       });
 
       if (existingEmail) {
-        throw new Error("Email already exists");
+        throw new Error("Username or Email already exists");
       }
-
+      //Erstellen des Benutzers
       return await db.user.create({
         data: {
           name: input.username,
@@ -130,7 +130,7 @@ export const authRouter = createTRPCRouter({
       if (!reset) {
         throw new Error("Invalid or expired token");
       }
-
+      //Zxcvbn Optionen setzen
       const options = {
         translations: zxcvbnDePackage.translations,
         graphs: zxcvbnCommonPackage.adjacencyGraphs,
@@ -141,7 +141,7 @@ export const authRouter = createTRPCRouter({
       };
 
       zxcvbnOptions.setOptions(options);
-
+      //Überprüfen ob das Passwort stark genug ist
       const passValidation = zxcvbn(input.newPassword);
       const pwstrength = passValidation.score;
 
