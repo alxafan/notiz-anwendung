@@ -25,7 +25,6 @@ export const noteRouter = createTRPCRouter({
           isPrivate: input.isPrivate,
         },
       });
-      console.log(note);
       return note;
     }),
 

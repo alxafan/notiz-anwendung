@@ -91,7 +91,7 @@ export const authRouter = createTRPCRouter({
       });
 
       if (!user) {
-        throw new Error("something went wrong");
+        return { message: "Password reset email sent!" };
       }
 
       // Generiere ein Reset-Token
