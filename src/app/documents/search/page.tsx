@@ -12,7 +12,7 @@ function Search() {
   const { data } = api.note.getNoteIdByTitle.useQuery(query);
   console.log(pathname, data);
   return (
-    <>
+    <div className="container mx-auto p-4">
       <h1>Suche nach Notizen</h1>
       <SearchBar />
       <div className="mt-4">Suchbegriff: {searchParams.get("q")}</div>
@@ -29,7 +29,7 @@ function Search() {
       ) : (
         <div className="mt-4">No notes found.</div>
       )}
-    </>
+    </div>
   );
 }
 

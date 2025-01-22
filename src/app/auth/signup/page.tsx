@@ -15,6 +15,7 @@ export default function SignUpForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [passwordScore, setPasswordScore] = useState(0);
+  const [succesMessage, setSuccesMessage] = useState("");
 
   const authentication = api.auth.signup.useMutation();
 
@@ -81,6 +82,7 @@ export default function SignUpForm() {
     e.preventDefault(); // Prevent form default submission
     // Check if form is valid... trpc route später noch aufrufen
     setErrorMessage("");
+    setSuccesMessage("");
     if (isFormValid) {
       authentication.mutate(
         {
@@ -90,12 +92,19 @@ export default function SignUpForm() {
         },
         {
           onSuccess: () => {
+            setSuccesMessage(
+              "Account erfolgreich erstellt. Sie werden weitergeleitet.",
+            );
             setTimeout(() => {
               router.push("/auth/signin");
             }, 2000);
           },
           onError: (error) => {
-            setErrorMessage(error.message);
+            if (error.message.includes("email")) {
+              setErrorMessage("Die angegebene E-Mail-Adresse ist ungültig.");
+            } else {
+              setErrorMessage(error.message);
+            }
           },
         },
       );
@@ -190,6 +199,9 @@ export default function SignUpForm() {
           </button>
           {errorMessage && (
             <p className="text-sm text-red-500">{errorMessage}</p>
+          )}
+          {succesMessage && (
+            <p className="text-sm text-green-500">{succesMessage}</p>
           )}
 
           <div className="w-full">
