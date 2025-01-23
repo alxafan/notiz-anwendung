@@ -19,13 +19,12 @@ export default function SignIn() {
       const result = await signIn("credentials", {
         username,
         password,
-        redirect: false,
+        redirectTo: "/"
       });
       if (result?.error) {
         setErrorMessage("Failed to sign in with credentials:");
       } else {
         setErrorMessage(""); // Clear error message
-        router.push("/");
       }
     }
   }
