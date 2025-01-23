@@ -1,12 +1,8 @@
-# Create T3 App
+# Notiz App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+In dieser Anwendung haben Nutzer die Möglichkeit, private und öffentliche Notizen zu erstellen. Diese kann man dann in einer Suche suchen und sich anzeigen lassen. Die Notizen können in Markdown oder mit HTML-Tags versehen werden. Unter anderem kann man private Notizen durch das Teilen des Links anderen Nutzern zeigen.
 
-## What's next? How do I make an app with this?
-
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Haupttechnologien
 
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
@@ -15,15 +11,25 @@ If you are not familiar with the different technologies used in this project, pl
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 
-## Learn More
+## Vorraussetzungen
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+Um das Projekt zu starten führen sie diese Schritte aus:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- Clonen sie das Repository
+- Installieren sie Docker
+- Erstellen sie ein Konto bei [Discord Developers](https://discord.com/developers).
+- Dort eine "New Application" erstellen
+- Unter OAuth2 die _CLIENT ID_ und das _CLIENT SECRET_ in die .env eingeben
+- Unter OAuth2 den Redirects angeben _http//note.localhost/api/auth/callback/discord_
+- Danach die restliche .env ausfüllen, Sie können sich an der .env example orientieren und den Kommentaren folgen.
+- Wenn das alles erledigt ist, führen sie _docker compose up --build_ aus
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Entwicklung
 
-## How do I deploy this?
+Um an dem Projekt zu arbeiten führen Sie folgende Schritte aus
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+- Erstellen sie einen neuen Branch feature/Feature
+  `git branch feature/NewFeature`
+- Speichern sie ihre Änderungen, schreiben eine commit Nachricht und pushen sie den Branch
+  `git commit -m "Nachricht"`
+  `git push`
