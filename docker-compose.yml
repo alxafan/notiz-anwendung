@@ -36,7 +36,7 @@ services:
     image: t3-app
     environment:
       - DATABASE_URL=${DATABASE_COMPOSE_URL}
-      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL=http://notes.localhost
       - AUTH_TRUST_HOST=TRUE
       - AUTH_SECRET=${AUTH_SECRET}
       - AUTH_DISCORD_ID=${AUTH_DISCORD_ID}
