@@ -8,8 +8,8 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
     ports:
-      - "80:80"
-      - "8080:8080"
+      - "80:80"     # Neccessary for reverse proxy
+      - "8080:8080" # For demonstration, that Middleware is running
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
   db:
@@ -19,8 +19,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: notiz-anwendung
-    ports:
-      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -31,8 +29,6 @@ services:
       args:
         NEXT_PUBLIC_CLIENTVAR: "clientvar"
     working_dir: /app
-    ports:
-      - "3000:3000"
     image: t3-app
     environment:
       - DATABASE_URL=${DATABASE_COMPOSE_URL}
@@ -51,7 +47,7 @@ services:
       - db
       - mailhog
 
-  dbPusher:
+  dbPusher: # npx prisma db push didn't work in the dockerfile, so we made it a service
     image: node:20-alpine
     working_dir: /app
     volumes:
@@ -66,8 +62,7 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "8025:8025" # MailHog Web UI
-      - "1025:1025" # SMTP Server
+      - "8025:8025" # MailHog Web UI for password reset demonstration
 
 volumes:
   db_data:

@@ -11,7 +11,7 @@ export const sendPasswordResetEmail = async (
   email: string,
   resetToken: string,
 ) => {
-  const resetUrl = `http://localhost:3000/auth/reset-password/${resetToken}`;
+  const resetUrl = `http://notes.localhost/auth/reset-password/${resetToken}`;
   const mailOptions = {
     from: "your-email@example.com",
     to: email,
