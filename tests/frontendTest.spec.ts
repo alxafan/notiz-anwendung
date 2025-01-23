@@ -17,7 +17,6 @@ test.describe("SignUpForm Tests", () => {
     await passwordInput.fill("ValidPassword123!");
     await confirmPasswordInput.fill("DifferentPassword123!");
 
-    // Fehlermeldung prüfen
     await expect(message).toBeVisible();
   });
 
