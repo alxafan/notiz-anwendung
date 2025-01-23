@@ -11,7 +11,7 @@ test.describe("backend test", () => {
     const client = createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: "http://localhost:3000/api/trpc",
+          url: "http://notes.localhost/api/trpc",
           transformer: superjson,
         }),
       ],

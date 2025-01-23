@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("SignUpForm Tests", () => {
   test.beforeEach(async ({ page }) => {
     // Navigiere zur Sign-Up-Seite
-    await page.goto("http://localhost:3000/auth/signup");
+    await page.goto("http://notes.localhost/auth/signup");
   });
 
   test("should show error when passwords do not match", async ({ page }) => {
