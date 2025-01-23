@@ -114,6 +114,7 @@ export const authConfig = {
           : null;
 
         if (!existingUser) {
+          if (!profile?.email) throw new Error("Email is required");
           user = await db.user.create({
             data: {
               name: profile?.username as string,
