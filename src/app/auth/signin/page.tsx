@@ -71,7 +71,11 @@ export default function SignIn() {
 
           <button
             type="button"
-            className="w-full rounded-lg bg-indigo-600 py-2 font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className={`w-full rounded-lg py-2 font-semibold focus:outline-none focus:ring-2 ${
+              isFormValid
+                ? "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
+                : "cursor-not-allowed bg-gray-400 text-gray-200"
+            }`}
             disabled={!isFormValid}
             onClick={handleCredentialsSignIn}
           >

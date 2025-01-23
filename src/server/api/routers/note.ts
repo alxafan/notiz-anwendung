@@ -13,10 +13,11 @@ export const noteRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      //Prüfen ob der Benutzer angemeldet ist
       if (!ctx.session.user) {
         throw new Error("Unauthorized: User not logged in");
       }
-
+      //Erstellen einer Notiz
       const note = await ctx.db.note.create({
         data: {
           title: input.title,
@@ -25,13 +26,16 @@ export const noteRouter = createTRPCRouter({
           isPrivate: input.isPrivate,
         },
       });
-      console.log(note);
       return note;
     }),
 
   getNoteById: protectedProcedure
     .input(z.string().uuid())
     .query(async ({ ctx, input }) => {
+      //Prüfen ob der Benutzer angemeldet ist
+      if (!ctx.session.user) {
+        throw new Error("Unauthorized: User not logged in");
+      }
       const note = await ctx.db.note.findFirst({
         where: {
           id: input,
@@ -48,17 +52,21 @@ export const noteRouter = createTRPCRouter({
           },
         },
       });
-
+      //Prüfen ob Note existiert
       if (!note) {
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      // Rückgabe der Notiz, wenn die Überprüfung bestanden ist
+      //Rückgabe der Notiz, wenn die Überprüfung bestanden ist
       return note;
     }),
   getNoteIdByTitle: protectedProcedure
     .input(z.string().nullable())
     .query(async ({ ctx, input }) => {
+      //Prüfen ob der Benutzer angemeldet ist
+      if (!ctx.session.user) {
+        throw new Error("Unauthorized: User not logged in");
+      }
       if (!input) return [];
       const ids = await ctx.db.note.findMany({
         where: {
