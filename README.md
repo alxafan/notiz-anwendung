@@ -15,14 +15,15 @@ In dieser Anwendung haben Nutzer die Möglichkeit, private und öffentliche Noti
 
 Um das Projekt zu starten führen sie diese Schritte aus:
 
-- Clonen sie das Repository
-- Installieren sie Docker
-- Erstellen sie ein Konto bei [Discord Developers](https://discord.com/developers).
+- Clonen Sie das Repository
+- Installieren Sie Docker
+- Erstellen Sie ein Konto bei [Discord Developers](https://discord.com/developers).
 - Dort eine "New Application" erstellen
 - Unter OAuth2 die _CLIENT ID_ und das _CLIENT SECRET_ in die .env eingeben
 - Unter OAuth2 den Redirects angeben _http//note.localhost/api/auth/callback/discord_
 - Danach die restliche .env ausfüllen, Sie können sich an der .env example orientieren und den Kommentaren folgen.
 - Wenn das alles erledigt ist, führen sie _docker compose up --build_ aus
+- Öffnen Sie die Seite, indem Sie notes.localhost in die Suchleiste des Browsers eingeben
 
 ## Entwicklung
 
