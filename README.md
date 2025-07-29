@@ -1,5 +1,7 @@
 # Notiz App
 
+Als Abschlussprojekt des Moduls Secure Software Engineering sollte diese App mithilfe der Inhalte der Vorlesung so sicher wie möglich gestaltet werden. In der [Dokumentation](https://github.com/alxafan/notiz-anwendung/blob/main/Dokumentation.pdf) findet man zu jedem Feature die jeweiligen Schutzmechanismen aufgelistet.
+
 In dieser Anwendung haben Nutzer die Möglichkeit, private und öffentliche Notizen zu erstellen. Diese kann man dann in einer Suche suchen und sich anzeigen lassen. Die Notizen können in Markdown oder mit HTML-Tags versehen werden. Unter anderem kann man private Notizen durch das Teilen des Links anderen Nutzern zeigen.
 
 ## Haupttechnologien
